@@ -58,5 +58,26 @@ document.getElementById('loginForm').addEventListener('submit', async (e)=>{
  message.textContent = 'Login waa guuleystay. Admin waa la xaqiijiyey!';
 });
 </script>
+
+<section class="card" style="margin-top:20px">
+  <h2>Orders Management</h2>
+  <input id="orderSearch" placeholder="Raadi Order ID ama macaamil">
+  <div style="overflow-x:auto">
+    <table style="width:100%;text-align:left;border-collapse:collapse">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Pair</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="ordersList">
+        <tr><td colspan="5">Dalabyo weli lama helin.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 </body>
 </html>
