@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#081426">
+<title>KL NAASIR EXCHANGE</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#081426;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:20px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ border-bottom:1px solid #26364c;
+}
+.logo{font-size:20px;font-weight:bold;color:#e8c477}
+.logo span{display:block;font-size:11px;letter-spacing:4px}
+nav a{color:#e8c477;text-decoration:none}
+main{max-width:850px;margin:auto;padding:25px}
+.hero{padding:55px 0 30px}
+.hero small{color:#e8c477;letter-spacing:4px}
+h1{font-size:45px;line-height:1.1}
+h1 span{color:#e8c477}
+p{color:#b8c5d6;line-height:1.7}
+.card{
+ background:#12243b;
+ border:1px solid #34445b;
+ border-radius:18px;
+ padding:25px;
+ margin-top:25px;
+}
+h2{color:#e8c477}
+label{display:block;margin:17px 0 8px}
+input,select{
+ width:100%;padding:14px;
+ border-radius:9px;
+ border:1px solid #43536a;
+ background:#081426;color:white;
+ font-size:16px;
+}
+button{
+ width:100%;padding:15px;
+ margin-top:20px;
+ border:0;border-radius:9px;
+ background:#e8c477;color:#081426;
+ font-weight:bold;font-size:16px;
+}
+.services{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+}
+.service{
+ background:#1b304a;
+ padding:13px;
+ border-radius:9px;
+ text-align:center;
+ color:#e8c477;
+}
+footer{text-align:center;padding:30px;color:#8999ad}
+@media(max-width:500px){
+ h1{font-size:37px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">
+  KL NAASIR
+  <span>EXCHANGE</span>
+ </div>
+ <nav>
+  <a href="https://t.me/KLNaasirExchangeBot">
+   Telegram Bot
+  </a>
+ </nav>
+</header>
+
+<main>
+
+<section class="hero">
+ <small>WELCOME TO KL NAASIR</small>
+ <h1>Fast & Easy<br><span>Currency Exchange</span></h1>
+ <p>
+  Welcome to KL NAASIR EXCHANGE.
+  Exchange your digital currencies and mobile money
+  through our customer support.
+ </p>
+</section>
+
+<section class="card">
+ <h2>Exchange Services</h2>
+
+ <label>Select Exchange Pair</label>
+ <select id="pair">
+  <option>EVC Plus ⇄ USDT</option>
+  <option>ZAAD ⇄ USDT</option>
+  <option>SAHAL ⇄ USDT</option>
+  <option>E-Dahab ⇄ USDT</option>
+  <option>USDT TRC20 ⇄ USDC</option>
+ </select>
+
+ <label>Enter Amount</label>
+ <input type="number" id="amount"
+ placeholder="Enter your amount" min="0">
+
+ <button onclick="exchange()">
+  Request Exchange
+ </button>
+
+ <p id="message"></p>
+</section>
+
+<section class="card">
+ <h2>Our Services</h2>
+ <div class="services">
+  <div class="service">EVC Plus</div>
+  <div class="service">ZAAD</div>
+  <div class="service">SAHAL</div>
+  <div class="service">E-Dahab</div>
+  <div class="service">USDT TRC20</div>
+  <div class="service">USDC</div>
+ </div>
+</section>
+
+<section class="card">
+ <h2>Customer Support</h2>
+ <p>Contact our Telegram bot to request an exchange.</p>
+ <a href="https://t.me/KLNaasirExchangeBot">
+  <button>Contact KL NAASIR</button>
+ </a>
+</section>
+
+</main>
+
+<footer>
+ © 2026 KL NAASIR EXCHANGE
+</footer>
+
+<script>
+function exchange(){
+ const amount=document.getElementById("amount").value;
+ const message=document.getElementById("message");
+
+ if(!amount || Number(amount)<=0){
+  message.textContent="Please enter a valid amount.";
+  return;
+ }
+
+ message.textContent=
+ "Please contact our Telegram bot to confirm the exchange rate and request.";
+}
+</script>
+
+</body>
+</html>
