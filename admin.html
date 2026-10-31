@@ -2,127 +2,305 @@
 <!DOCTYPE html>
 <html lang="so">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KL NAASIR - Admin Dashboard</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 20px;
-      font-family: Arial, sans-serif;
-      background: #0b1220; color: white;
-    }
-    .container {
-      max-width: 850px; margin: 35px auto;
-      background: #172235; padding: 25px;
-      border-radius: 15px;
-    }
-    h1 { color: #35d6a0; }
-    input {
-      width: 100%; padding: 14px; margin: 10px 0;
-      border: 1px solid #40516a; border-radius: 8px;
-      background: #0b1220; color: white;
-    }
-    button {
-      padding: 13px 18px; border: 0;
-      border-radius: 8px; background: #16a879;
-      color: white; font-weight: bold; cursor: pointer;
-    }
-    .logout { background: #d94848; }
-    .panel {
-      background: #22324a; padding: 18px;
-      margin-top: 18px; border-radius: 10px;
-    }
-    #dashboard { display: none; }
-    #message { color: #ffd166; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KL NAASIR | Admin Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:#0b1220;color:#fff;font-family:Arial,sans-serif}
+.container{max-width:1100px;margin:25px auto}
+header,.panel{background:#172235;padding:20px;border-radius:14px;margin-bottom:18px}
+h1{color:#35d6a0;margin-top:0}
+h2{margin-top:0}
+input,select{width:100%;padding:13px;margin:8px 0;background:#0b1220;color:white;border:1px solid #40516a;border-radius:8px}
+button{padding:11px 15px;border:0;border-radius:8px;background:#16a879;color:white;font-weight:bold;cursor:pointer;margin:4px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.reject,.logout{background:#d94848}
+.refresh{background:#356bd6}
+#dashboard{display:none}
+#message{color:#ffd166;overflow-wrap:anywhere}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:750px}
+th,td{padding:12px;border-bottom:1px solid #40516a;text-align:left;font-size:14px}
+th{color:#35d6a0}
+.status{font-weight:bold}
+.pending{color:#ffd166}
+.approved{color:#35d6a0}
+.rejected{color:#ff7777}
+.small{color:#aebbd0;font-size:13px}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>KL NAASIR EXCHANGE</h1>
+<div class="container">
+<header>
+<h1>KL NAASIR EXCHANGE</h1>
+<p>Secure Super Admin Dashboard</p>
+</header>
 
-    <section id="login">
-      <h2>Admin Login</h2>
-      <input id="email" type="email" placeholder="Email address">
-      <input id="password" type="password" placeholder="Password">
-      <button id="loginBtn">Login</button>
-      <p id="message"></p>
-    </section>
+<section class="panel" id="login">
+<h2>Admin Login</h2>
+<input id="email" type="email" placeholder="Email address" autocomplete="username">
+<input id="password" type="password" placeholder="Password" autocomplete="current-password">
+<button id="loginBtn">Login</button>
+<p id="message"></p>
+</section>
 
-    <section id="dashboard">
-      <h2>Admin Dashboard</h2>
-      <p>Login waa guuleystay. Akoonka waa la galay.</p>
-      <button class="logout" id="logoutBtn">Logout</button>
+<section id="dashboard">
+<div class="panel">
+<h2>Admin Dashboard</h2>
+<p id="adminEmail" class="small"></p>
+<button class="refresh" id="refreshBtn">Refresh Orders</button>
+<button class="logout" id="logoutBtn">Logout</button>
+<p id="dashboardMessage"></p>
+</div>
 
-      <div class="panel">
-        <h3>Dalabyada (Orders)</h3>
-        <p>Dalabyada halkan ayay ka muuqan doonaan marka database-ka lagu xiro.</p>
-      </div>
+<div class="panel">
+<h2>Orders Management</h2>
+<p class="small">Dalabyada Supabase database-ka ku jira.</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Customer</th>
+<th>Contact</th>
+<th>Exchange</th>
+<th>Amount</th>
+<th>Payment</th>
+<th>Hash</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="ordersBody">
+<tr><td colspan="9">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
 
-      <div class="panel">
-        <h3>Payment Management</h3>
-        <p>Maamulka lacag-bixinta waxaa lagu dari doonaa tallaabada xigta.</p>
-      </div>
-    </section>
-  </div>
+<script type="module">
+import { createClient }
+from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  <script type="module">
-    import { createClient }
-      from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+const SUPABASE_URL = "https://rxpluycceahzrnagcuzw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_eWaOte-BYB6kjE9NAJIb3w_rt1a-HqQ";
 
-    // Ku beddel labada qiime xogta Supabase ee mashruucaaga.
-    const SUPABASE_URL = "https://rxpluycceahzrnagcuzw.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_eWaOte-BYB6kjE9NAJIb3w_rt1a-HqQ";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const login = document.getElementById("login");
+const dashboard = document.getElementById("dashboard");
+const message = document.getElementById("message");
+const dashboardMessage = document.getElementById("dashboardMessage");
+const ordersBody = document.getElementById("ordersBody");
 
-    const loginSection = document.getElementById("login");
-    const dashboard = document.getElementById("dashboard");
-    const message = document.getElementById("message");
+let currentUser = null;
 
-    function showDashboard() {
-      loginSection.style.display = "none";
-      dashboard.style.display = "block";
+function showLogin(text = "") {
+  currentUser = null;
+  dashboard.style.display = "none";
+  login.style.display = "block";
+  message.textContent = text;
+}
+
+function showDashboard() {
+  login.style.display = "none";
+  dashboard.style.display = "block";
+}
+
+async function verifyAdmin(user) {
+  const { data, error } = await supabase
+    .from("admin_users")
+    .select("role")
+    .eq("user_id", user.id)
+    .eq("role", "super_admin")
+    .maybeSingle();
+
+  if (error) throw error;
+  return !!data;
+}
+
+async function enterDashboard(user) {
+  const allowed = await verifyAdmin(user);
+
+  if (!allowed) {
+    await supabase.auth.signOut();
+    showLogin("Akoonkan looma oggola Super Admin.");
+    return;
+  }
+
+  currentUser = user;
+  document.getElementById("adminEmail").textContent =
+    "Super Admin: " + user.email;
+
+  showDashboard();
+  await loadOrders();
+}
+
+async function loadOrders() {
+  if (!currentUser) return;
+
+  dashboardMessage.textContent = "Dalabyada waa la soo rarayaa...";
+  ordersBody.textContent = "";
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    dashboardMessage.textContent =
+      "Dalabyada lama soo qaadi karin: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    ordersBody.innerHTML =
+      '<tr><td colspan="9">Weli dalab ma jiro.</td></tr>';
+    dashboardMessage.textContent = "0 dalab.";
+    return;
+  }
+
+  dashboardMessage.textContent =
+    data.length + " dalab ayaa la helay.";
+
+  for (const order of data) {
+    const tr = document.createElement("tr");
+
+    function cell(value) {
+      const td = document.createElement("td");
+      td.textContent = value == null ? "-" : String(value);
+      tr.appendChild(td);
     }
 
-    function showLogin() {
-      dashboard.style.display = "none";
-      loginSection.style.display = "block";
-    }
+    cell(String(order.id).slice(0, 8));
+    cell(order.customer_name);
+    cell(order.customer_contact);
+    cell(order.exchange_pair);
+    cell(order.amount);
+    cell(order.payment_method);
+    cell(order.transaction_hash);
 
-    document.getElementById("loginBtn").addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+    const statusCell = document.createElement("td");
+    statusCell.textContent = order.status;
+    statusCell.className = "status " + order.status;
+    tr.appendChild(statusCell);
 
-      message.textContent = "Fadlan sug...";
+    const actionCell = document.createElement("td");
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+    if (order.status === "pending") {
+      const approve = document.createElement("button");
+      approve.textContent = "Approve";
+      approve.addEventListener("click", () =>
+        updateOrder(order.id, "approved", approve, reject)
+      );
 
-      if (error) {
-        message.textContent = "Login waa fashilmay: " + error.message;
-        return;
-      }
+      const reject = document.createElement("button");
+      reject.textContent = "Reject";
+      reject.className = "reject";
+      reject.addEventListener("click", () =>
+        updateOrder(order.id, "rejected", reject, approve)
+      );
 
-      message.textContent = "";
-      showDashboard();
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      showLogin();
-      message.textContent = "Waad ka baxday akoonka.";
-    });
-
-    const { data } = await supabase.auth.getSession();
-
-    if (data.session) {
-      showDashboard();
+      actionCell.append(approve, reject);
     } else {
-      showLogin();
+      actionCell.textContent = "La dhammeeyay";
     }
-  </script>
+
+    tr.appendChild(actionCell);
+    ordersBody.appendChild(tr);
+  }
+}
+
+async function updateOrder(id, status, button, otherButton) {
+  if (!currentUser) return;
+
+  if (!confirm(
+    status === "approved"
+      ? "Ma hubisay lacagta? Ma ansixinaysaa dalabkan?"
+      : "Ma hubtaa inaad diidayso dalabkan?"
+  )) return;
+
+  button.disabled = true;
+  otherButton.disabled = true;
+
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", id)
+    .eq("status", "pending");
+
+  if (error) {
+    dashboardMessage.textContent =
+      "Update ma guuleysan: " + error.message;
+    button.disabled = false;
+    otherButton.disabled = false;
+    return;
+  }
+
+  dashboardMessage.textContent = "Dalabka waa la cusboonaysiiyey.";
+  await loadOrders();
+}
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    message.textContent = "Geli email iyo password.";
+    return;
+  }
+
+  message.textContent = "Fadlan sug...";
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    message.textContent = "Login error: " + error.message;
+    return;
+  }
+
+  try {
+    await enterDashboard(data.user);
+  } catch (err) {
+    await supabase.auth.signOut();
+    showLogin("Xaqiijinta Admin way fashilantay: " + err.message);
+  }
+});
+
+document.getElementById("refreshBtn").addEventListener("click", loadOrders);
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  showLogin("Waad ka baxday akoonka.");
+});
+
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT") {
+    showLogin("Waad ka baxday akoonka.");
+  }
+});
+
+const { data: sessionData } = await supabase.auth.getSession();
+
+if (sessionData.session) {
+  try {
+    await enterDashboard(sessionData.session.user);
+  } catch (err) {
+    await supabase.auth.signOut();
+    showLogin("Admin verification error: " + err.message);
+  }
+} else {
+  showLogin();
+}
+</script>
 </body>
 </html>
