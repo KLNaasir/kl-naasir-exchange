@@ -6,22 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#081426">
 <title>KL NAASIR EXCHANGE</title>
-
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;
- background:#081426;
- color:white;
- font-family:Arial,sans-serif;
-}
-header{
- padding:20px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- border-bottom:1px solid #26364c;
-}
+body{margin:0;background:#081426;color:white;font-family:Arial,sans-serif}
+header{padding:20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #26364c}
 .logo{font-size:20px;font-weight:bold;color:#e8c477}
 .logo span{display:block;font-size:11px;letter-spacing:4px}
 nav a{color:#e8c477;text-decoration:none}
@@ -31,95 +19,74 @@ main{max-width:850px;margin:auto;padding:25px}
 h1{font-size:45px;line-height:1.1}
 h1 span{color:#e8c477}
 p{color:#b8c5d6;line-height:1.7}
-.card{
- background:#12243b;
- border:1px solid #34445b;
- border-radius:18px;
- padding:25px;
- margin-top:25px;
-}
+.card{background:#12243b;border:1px solid #34445b;border-radius:18px;padding:25px;margin-top:25px}
 h2{color:#e8c477}
 label{display:block;margin:17px 0 8px}
-input,select{
- width:100%;padding:14px;
- border-radius:9px;
- border:1px solid #43536a;
- background:#081426;color:white;
- font-size:16px;
-}
-button{
- width:100%;padding:15px;
- margin-top:20px;
- border:0;border-radius:9px;
- background:#e8c477;color:#081426;
- font-weight:bold;font-size:16px;
-}
-.services{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:10px;
-}
-.service{
- background:#1b304a;
- padding:13px;
- border-radius:9px;
- text-align:center;
- color:#e8c477;
-}
+input,select{width:100%;padding:14px;border-radius:9px;border:1px solid #43536a;background:#081426;color:white;font-size:16px}
+button{width:100%;padding:15px;margin-top:20px;border:0;border-radius:9px;background:#e8c477;color:#081426;font-weight:bold;font-size:16px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.services{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.service{background:#1b304a;padding:13px;border-radius:9px;text-align:center;color:#e8c477}
+#message{overflow-wrap:anywhere}
 footer{text-align:center;padding:30px;color:#8999ad}
-@media(max-width:500px){
- h1{font-size:37px}
-}
+@media(max-width:500px){h1{font-size:37px}}
 </style>
 </head>
-
 <body>
 
 <header>
- <div class="logo">
-  KL NAASIR
-  <span>EXCHANGE</span>
- </div>
- <nav>
-  <a href="https://t.me/KLNaasirExchangeBot">
-   Telegram Bot
-  </a>
- </nav>
+ <div class="logo">KL NAASIR<span>EXCHANGE</span></div>
+ <nav><a href="https://t.me/KLNaasirExchangeBot">Telegram Bot</a></nav>
 </header>
 
 <main>
-
 <section class="hero">
  <small>WELCOME TO KL NAASIR</small>
  <h1>Fast & Easy<br><span>Currency Exchange</span></h1>
- <p>
-  Welcome to KL NAASIR EXCHANGE.
-  Exchange your digital currencies and mobile money
-  through our customer support.
- </p>
+ <p>Welcome to KL NAASIR EXCHANGE. Submit your exchange request securely and our admin will review it.</p>
 </section>
 
 <section class="card">
- <h2>Exchange Services</h2>
+ <h2>Request Exchange</h2>
 
- <label>Select Exchange Pair</label>
- <select id="pair">
-  <option>EVC Plus ⇄ USDT</option>
-  <option>ZAAD ⇄ USDT</option>
-  <option>SAHAL ⇄ USDT</option>
-  <option>E-Dahab ⇄ USDT</option>
-  <option>USDT TRC20 ⇄ USDC</option>
- </select>
+ <form id="orderForm">
+  <label for="customerName">Full Name</label>
+  <input id="customerName" type="text" maxlength="100" required placeholder="Enter your name">
 
- <label>Enter Amount</label>
- <input type="number" id="amount"
- placeholder="Enter your amount" min="0">
+  <label for="contact">Phone / Contact</label>
+  <input id="contact" type="text" maxlength="50" required placeholder="Enter your phone number">
 
- <button onclick="exchange()">
-  Request Exchange
- </button>
+  <label for="pair">Select Exchange Pair</label>
+  <select id="pair" required>
+   <option>EVC Plus ⇄ USDT</option>
+   <option>ZAAD ⇄ USDT</option>
+   <option>SAHAL ⇄ USDT</option>
+   <option>E-Dahab ⇄ USDT</option>
+   <option>USDT TRC20 ⇄ USDC</option>
+  </select>
 
- <p id="message"></p>
+  <label for="amount">Amount</label>
+  <input id="amount" type="number" min="0.01" max="100000000" step="0.01" required placeholder="Enter amount">
+
+  <label for="paymentMethod">Payment Method</label>
+  <select id="paymentMethod" required>
+   <option value="">Select payment method</option>
+   <option value="EVC Plus">EVC Plus</option>
+   <option value="ZAAD">ZAAD</option>
+   <option value="SAHAL">SAHAL</option>
+   <option value="E-Dahab">E-Dahab</option>
+   <option value="USDT TRC20">USDT TRC20</option>
+   <option value="USDC">USDC</option>
+   <option value="Other">Other</option>
+  </select>
+
+  <label for="transactionHash">Transaction Hash (optional)</label>
+  <input id="transactionHash" type="text" maxlength="200" placeholder="Enter transaction hash if available">
+
+  <button id="submitButton" type="submit">Submit Exchange Request</button>
+ </form>
+
+ <p id="message" role="status" aria-live="polite"></p>
 </section>
 
 <section class="card">
@@ -136,32 +103,78 @@ footer{text-align:center;padding:30px;color:#8999ad}
 
 <section class="card">
  <h2>Customer Support</h2>
- <p>Contact our Telegram bot to request an exchange.</p>
+ <p>Contact our Telegram bot for assistance.</p>
  <a href="https://t.me/KLNaasirExchangeBot">
-  <button>Contact KL NAASIR</button>
+  <button type="button">Contact KL NAASIR</button>
  </a>
 </section>
-
 </main>
 
-<footer>
- © 2026 KL NAASIR EXCHANGE
-</footer>
+<footer>© 2026 KL NAASIR EXCHANGE</footer>
 
-<script>
-function exchange(){
- const amount=document.getElementById("amount").value;
- const message=document.getElementById("message");
+<script type="module">
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
- if(!amount || Number(amount)<=0){
-  message.textContent="Please enter a valid amount.";
+const SUPABASE_URL = 'https://rxpluycceahzrnagcuzw.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_eWaOte-BYB6kjE9NAJIb3w_rt1a-HqQ';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const form = document.getElementById('orderForm');
+const message = document.getElementById('message');
+const button = document.getElementById('submitButton');
+
+form.addEventListener('submit', async (event) => {
+ event.preventDefault();
+
+ if (!form.reportValidity()) return;
+
+ const customerName = document.getElementById('customerName').value.trim();
+ const customerContact = document.getElementById('contact').value.trim();
+ const exchangePair = document.getElementById('pair').value;
+ const amount = Number(document.getElementById('amount').value);
+ const paymentMethod = document.getElementById('paymentMethod').value;
+ const transactionHash = document.getElementById('transactionHash').value.trim();
+
+ if (customerName.length < 2 || customerContact.length < 5 ||
+     !Number.isFinite(amount) || amount <= 0 || amount > 100000000) {
+  message.textContent = 'Please check your details and enter a valid amount.';
   return;
  }
 
- message.textContent=
- "Please contact our Telegram bot to confirm the exchange rate and request.";
-}
-</script>
+ button.disabled = true;
+ button.textContent = 'Submitting...';
+ message.textContent = '';
 
+ try {
+  const { error } = await supabase
+   .from('orders')
+   .insert({
+    customer_name: customerName,
+    customer_contact: customerContact,
+    exchange_pair: exchangePair,
+    amount: amount,
+    payment_method: paymentMethod,
+    transaction_hash: transactionHash || null
+   });
+
+  if (error) throw error;
+
+  message.textContent =
+   'Your request was submitted successfully! Your order is pending admin review.';
+
+  form.reset();
+
+ } catch (error) {
+  console.error('Order submission error:', error);
+  message.textContent =
+   'Could not submit your request. Please try again or contact our support.';
+ } finally {
+  button.disabled = false;
+  button.textContent = 'Submit Exchange Request';
+ }
+});
+</script>
 </body>
 </html>
