@@ -197,7 +197,7 @@ receiveForm.addEventListener('submit',async event=>{
  if(receiveAccount.length<5){message.textContent='Geli telefoon ama wallet address sax ah.';return}
  sendButton.disabled=true;sendButton.textContent='Sending...';message.textContent='';
  try{
-  const {data,error}=await supabase.from('orders').insert({...pendingOrder,receive_method:receiveMethod,receive_account:receiveAccount}).select('id').single();
+  const {data,error}=await supabase.from('orders').insert({...pendingOrder,status:'pending',receive_method:receiveMethod,receive_account:receiveAccount}).select('id').single();
   if(error)throw error;
   receiveForm.style.display='none';form.reset();receiveForm.reset();pendingOrder=null;message.style.color='#20c997';message.innerHTML='Your request was sent successfully! Status: PENDING. Save your Order ID: <strong>'+String(data.id)+'</strong> · <a href="track.html" style="color:#e8c477">Track Transaction</a>';
  }catch(error){console.error('Order submission error:',error);message.style.color='#ffb4a8';message.textContent='Submission failed: '+(error?.message||'Unknown error')}
