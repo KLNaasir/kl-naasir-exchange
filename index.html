@@ -36,7 +36,7 @@ footer{text-align:center;padding:30px;color:#8999ad}
 
 <header>
  <div class="logo">KL NAASIR<span>EXCHANGE</span></div>
- <nav><a href="https://t.me/KLNaasirExchangeBot">Telegram Bot</a></nav>
+ <nav>Secure Exchange</nav>
 </header>
 
 <main>
@@ -61,8 +61,7 @@ footer{text-align:center;padding:30px;color:#8999ad}
    <option>EVC Plus ⇄ USDT</option>
    <option>ZAAD ⇄ USDT</option>
    <option>SAHAL ⇄ USDT</option>
-   <option>E-Dahab ⇄ USDT</option>
-   <option>USDT TRC20 ⇄ USDC</option>
+   <option>USDT ⇄ USDC</option>
   </select>
 
   <label for="amount">Amount</label>
@@ -74,11 +73,12 @@ footer{text-align:center;padding:30px;color:#8999ad}
    <option value="EVC Plus">EVC Plus</option>
    <option value="ZAAD">ZAAD</option>
    <option value="SAHAL">SAHAL</option>
-   <option value="E-Dahab">E-Dahab</option>
    <option value="USDT TRC20">USDT TRC20</option>
-   <option value="USDC">USDC</option>
-   <option value="Other">Other</option>
+   <option value="USDT BEP20">USDT BEP20</option>
+   <option value="USDC BEP20">USDC BEP20</option>
   </select>
+
+  <section id="paymentDetails" style="display:none;background:#1b304a;border:1px solid #43536a;border-radius:12px;padding:16px;margin-top:18px;overflow-wrap:anywhere"><h3 id="destinationTitle" style="color:#e8c477;margin-top:0">Payment destination</h3><p id="destinationNetwork"></p><p id="destinationAddress" style="font-weight:bold;word-break:break-all"></p><img id="destinationQr" alt="Payment QR Code" width="190" height="190" style="display:block;background:white;padding:8px;border-radius:8px;margin:12px auto"><button type="button" id="copyDestination" style="margin-top:8px">Copy payment details</button><p style="font-size:13px">Hubi network-ka ka hor intaadan dirin lacagta. Ha dirin USDT TRC20 adigoo adeegsanaya BEP20 ama lidkeeda.</p></section>
 
   <label for="transactionHash">Transaction Hash (optional)</label>
   <input id="transactionHash" type="text" maxlength="200" placeholder="Enter transaction hash if available">
@@ -95,18 +95,15 @@ footer{text-align:center;padding:30px;color:#8999ad}
   <div class="service">EVC Plus</div>
   <div class="service">ZAAD</div>
   <div class="service">SAHAL</div>
-  <div class="service">E-Dahab</div>
   <div class="service">USDT TRC20</div>
-  <div class="service">USDC</div>
+  <div class="service">USDT BEP20</div>
+  <div class="service">USDC BEP20</div>
  </div>
 </section>
 
 <section class="card">
  <h2>Customer Support</h2>
- <p>Contact our Telegram bot for assistance.</p>
- <a href="https://t.me/KLNaasirExchangeBot">
-  <button type="button">Contact KL NAASIR</button>
- </a>
+ <p>For assistance, contact KL NAASIR support through your usual contact channel.</p>
 </section>
 </main>
 
@@ -124,6 +121,18 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const form = document.getElementById('orderForm');
 const message = document.getElementById('message');
 const button = document.getElementById('submitButton');
+const destinations={
+ 'EVC Plus':{network:'Mobile Money',address:'906753968'},
+ 'ZAAD':{network:'Mobile Money',address:'906753968'},
+ 'SAHAL':{network:'Mobile Money',address:'906753968'},
+ 'USDT TRC20':{network:'TRON · TRC20',address:'TL5v4W9aVhWbUQeg7dAbocT93tXNu4tQbF'},
+ 'USDT BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'},
+ 'USDC BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'}
+};
+const paymentSelect=document.getElementById('paymentMethod');
+function showPaymentDestination(){const method=paymentSelect.value,d=destinations[method],panel=document.getElementById('paymentDetails');if(!d){panel.style.display='none';return}panel.style.display='block';document.getElementById('destinationTitle').textContent=method+' · Send payment to';document.getElementById('destinationNetwork').textContent='Network: '+d.network;document.getElementById('destinationAddress').textContent=d.address;const qr=document.getElementById('destinationQr');if(method.includes('USDT')||method.includes('USDC')){qr.style.display='block';qr.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(d.address)}else{qr.style.display='none';qr.removeAttribute('src')}}
+paymentSelect.addEventListener('change',showPaymentDestination);
+document.getElementById('copyDestination').addEventListener('click',async()=>{const value=document.getElementById('destinationAddress').textContent;try{await navigator.clipboard.writeText(value);document.getElementById('copyDestination').textContent='Copied!'}catch{document.getElementById('copyDestination').textContent='Copy failed'}});
 
 form.addEventListener('submit', async (event) => {
  event.preventDefault();
