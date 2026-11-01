@@ -122,15 +122,15 @@ const form = document.getElementById('orderForm');
 const message = document.getElementById('message');
 const button = document.getElementById('submitButton');
 const destinations={
- 'EVC Plus':{network:'Mobile Money',address:'906753968'},
- 'ZAAD':{network:'Mobile Money',address:'906753968'},
- 'SAHAL':{network:'Mobile Money',address:'906753968'},
+ 'EVC Plus':{network:'Mobile Money',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE'},
+ 'ZAAD':{network:'Mobile Money',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE'},
+ 'SAHAL':{network:'Mobile Money',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE'},
  'USDT TRC20':{network:'TRON · TRC20',address:'TL5v4W9aVhWbUQeg7dAbocT93tXNu4tQbF'},
  'USDT BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'},
  'USDC BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'}
 };
 const paymentSelect=document.getElementById('paymentMethod');
-function showPaymentDestination(){const method=paymentSelect.value,d=destinations[method],panel=document.getElementById('paymentDetails');if(!d){panel.style.display='none';return}panel.style.display='block';document.getElementById('destinationTitle').textContent=method+' · Send payment to';document.getElementById('destinationNetwork').textContent='Network: '+d.network;document.getElementById('destinationAddress').textContent=d.address;const qr=document.getElementById('destinationQr');if(method.includes('USDT')||method.includes('USDC')){qr.style.display='block';qr.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(d.address)}else{qr.style.display='none';qr.removeAttribute('src')}}
+function showPaymentDestination(){const method=paymentSelect.value,d=destinations[method],panel=document.getElementById('paymentDetails');if(!d){panel.style.display='none';return}panel.style.display='block';document.getElementById('destinationTitle').textContent=method+' · Send payment to';document.getElementById('destinationNetwork').textContent='Network: '+d.network+(d.accountName?' · Account name: '+d.accountName:'');document.getElementById('destinationAddress').textContent=d.address;const qr=document.getElementById('destinationQr');if(method.includes('USDT')||method.includes('USDC')){qr.style.display='block';qr.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(d.address)}else{qr.style.display='none';qr.removeAttribute('src')}}
 paymentSelect.addEventListener('change',showPaymentDestination);
 document.getElementById('copyDestination').addEventListener('click',async()=>{const value=document.getElementById('destinationAddress').textContent;try{await navigator.clipboard.writeText(value);document.getElementById('copyDestination').textContent='Copied!'}catch{document.getElementById('copyDestination').textContent='Copy failed'}});
 
