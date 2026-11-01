@@ -16,7 +16,7 @@
 </section></main>
 <script type="module">
 import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-const supabase=createClient("https://rxpluycceahzrnagcuzw.supabase.co","sb_publishable_eWaOte-BY6BkjE9NAJIb3w_rt1a-HqQ");
+const supabase=createClient("https://rxpluycceahzrnagcuzw.supabase.co","sb_publishable_eWaOte-BYB6kjE9NAJIb3w_rt1a-HqQ");
 const $=id=>document.getElementById(id);let currentUser=null,allOrders=[];
 function showLogin(msg=""){currentUser=null;$("dashboard").style.display="none";$("login").style.display="block";$("message").textContent=msg}
 async function verifyAdmin(user){const {data,error}=await supabase.from("admin_users").select("role").eq("user_id",user.id).eq("role","super_admin").maybeSingle();if(error)throw error;return !!data}
