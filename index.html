@@ -177,8 +177,9 @@ form.addEventListener('submit', async (event) => {
 
  } catch (error) {
   console.error('Order submission error:', error);
-  message.textContent =
-   'Could not submit your request. Please try again or contact our support.';
+  const detail = error?.message || error?.details || error?.hint || 'Unknown error';
+  message.textContent = 'Submission failed: ' + detail;
+  message.style.color = '#ffb4a8';
  } finally {
   button.disabled = false;
   button.textContent = 'Submit Exchange Request';
