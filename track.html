@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#081426"><title>Track Transaction | KL NAASIR</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#081426;color:#f5f7fb;font:16px Arial,sans-serif}header{padding:18px 20px;border-bottom:1px solid #34445b;display:flex;justify-content:space-between;gap:12px;align-items:center}a{color:#e8c477;text-decoration:none}.wrap{max-width:760px;margin:28px auto;padding:0 16px}.card{background:#12243b;border:1px solid #34445b;border-radius:16px;padding:22px;margin:18px 0}h1,h2{color:#e8c477}label{display:block;margin:14px 0 7px}input{width:100%;padding:14px;border-radius:9px;border:1px solid #43536a;background:#081426;color:white;font-size:16px}button{padding:14px 18px;border:0;border-radius:9px;background:#e8c477;color:#081426;font-weight:bold;cursor:pointer;margin-top:16px;width:100%}.muted{color:#b8c5d6;line-height:1.6}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.item{background:#0b192b;padding:12px;border-radius:9px;overflow-wrap:anywhere}.item small{display:block;color:#a9b8ca;margin-bottom:6px}.item strong{overflow-wrap:anywhere}.timeline{list-style:none;padding:0;margin:20px 0}.timeline li{border-left:3px solid #43536a;padding:0 0 22px 18px;margin-left:8px;position:relative}.timeline li:before{content:"";position:absolute;left:-8px;top:0;width:13px;height:13px;border-radius:50%;background:#43536a}.timeline li.done{border-color:#20c997}.timeline li.done:before{background:#20c997}.timeline li.current:before{background:#e8c477}.status{font-weight:bold;color:#e8c477;text-transform:uppercase}#receipt{display:none}#message{color:#e8c477;overflow-wrap:anywhere}@media(max-width:520px){.grid{grid-template-columns:1fr}header{font-size:14px}}
+@media print{body{background:white;color:#111}header,#lookup,.no-print{display:none!important}.wrap{margin:0;max-width:none}.card,.item{background:white;color:#111;border:1px solid #ccc;break-inside:avoid}.muted,.item small{color:#444}h1,h2{color:#222}}
+</style></head>
+<body><header><strong style="color:#e8c477">KL NAASIR EXCHANGE</strong><a href="index.html">← Back to Exchange</a></header>
+<main class="wrap"><section class="card" id="lookup"><h1>Track Your Transaction</h1><p class="muted">Geli Order ID-ga buuxa iyo telefoonkii aad dalabka ku diiwaangelisay si aad u aragto rasiidka iyo marxaladda lacagta.</p>
+<label for="orderId">Order ID</label><input id="orderId" autocomplete="off" placeholder="Paste full Order ID">
+<label for="phone">Phone / Contact</label><input id="phone" autocomplete="tel" placeholder="Enter registered phone number">
+<button id="searchBtn">Search Transaction</button><p id="message" role="status"></p></section>
+<section class="card" id="receipt"><div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><h1>Transaction Receipt</h1><p class="muted">KL NAASIR EXCHANGE · Rasiidka dalabka</p></div><button class="no-print" id="printBtn" style="width:auto;margin:0">Print / Save PDF</button></div>
+<div class="grid" id="details"></div><h2>Transaction Progress</h2><p class="muted" id="progressText"></p><ol class="timeline" id="timeline"></ol><p class="muted" id="adminNote"></p></section></main>
+<script type="module">
+import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const supabase=createClient("https://rxpluycceahzrnagcuzw.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cGx1eWNjZWFoenJuYWdjdXp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NDA1OTUsImV4cCI6MjEwOTAxNjU5NX0.OqbS4t4h2M9GM4ppqLj5D5xbCO1TPXHW22lvNLLTzuc");
+const $=id=>document.getElementById(id);
+const stages=["pending","approved","processing","completed"];
+function date(v){return v?new Date(v).toLocaleString():"Not recorded"}
+function addDetail(root,label,value){const d=document.createElement("div");d.className="item";const s=document.createElement("small");s.textContent=label;const b=document.createElement("strong");b.textContent=value==null||value===""?"-":String(value);d.append(s,b);root.append(d)}
+$("searchBtn").addEventListener("click",async()=>{const id=$("orderId").value.trim(),phone=$("phone").value.trim();$("message").textContent="Searching...";$("receipt").style.display="none";if(!id||!phone){$("message").textContent="Geli Order ID iyo telefoonka.";return}
+try{const {data,error}=await supabase.rpc("track_order_receipt",{p_order_id:id,p_contact:phone});if(error)throw error;if(!data||!data.id){$("message").textContent="Dalab lama helin. Hubi Order ID-ga iyo telefoonka.";return}
+$("message").textContent="";const root=$("details");root.replaceChildren();
+addDetail(root,"Order ID",data.id);addDetail(root,"Order Date",date(data.created_at));addDetail(root,"Customer",data.customer_name);addDetail(root,"Contact",data.customer_contact);addDetail(root,"Exchange Pair",data.exchange_pair);addDetail(root,"Amount",data.amount);addDetail(root,"Payment Method (From)",data.payment_method);addDetail(root,"Payment Destination",data.payment_destination);addDetail(root,"Transaction Hash",data.transaction_hash);addDetail(root,"Receive Method",data.receive_method);addDetail(root,"Receive Account",data.receive_account);addDetail(root,"Current Status",data.status);
+const history=Array.isArray(data.history)?data.history:[];const list=$("timeline");list.replaceChildren();const labels={pending:"PENDING — Order received",approved:"APPROVED — Incoming payment verified",processing:"PROCESSING — Payout being prepared",completed:"COMPLETED — Payout sent",rejected:"REJECTED — Order declined"};const ordered=[...history];for(const s of stages){if(!ordered.some(x=>x.status===s)&&s===data.status)ordered.push({status:s,changed_at:null})}
+ordered.sort((a,b)=>new Date(a.changed_at||data.created_at)-new Date(b.changed_at||data.created_at));
+for(const h of ordered){const li=document.createElement("li");li.className="done"+(h.status===data.status?" current":"");const strong=document.createElement("strong");strong.textContent=labels[h.status]||h.status;const time=document.createElement("div");time.className="muted";time.textContent=date(h.changed_at);li.append(strong,time);list.append(li)}
+$("progressText").textContent="Marxaladaha la diiwaangeliyey: "+history.length+" · Xaaladda hadda: "+data.status;
+$("adminNote").textContent=data.admin_note?"Admin note: "+data.admin_note:"";$("receipt").style.display="block";$("receipt").scrollIntoView({behavior:"smooth"});
+}catch(e){console.error(e);$("message").textContent="Tracking error: "+(e.message||"Try again")}})
+$("printBtn").addEventListener("click",()=>window.print());
+</script></body></html>
