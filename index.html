@@ -58,34 +58,69 @@ footer{text-align:center;padding:30px;color:#8999ad}
 
   <label for="pair">Select Exchange Pair</label>
   <select id="pair" required>
-   <option>EVC Plus ⇄ USDT</option>
-   <option>ZAAD ⇄ USDT</option>
-   <option>SAHAL ⇄ USDT</option>
-   <option>USDT ⇄ USDC</option>
+   <option value="">Dooro lacagaha la isweydaarsanayo</option>
+   <option value="Sahal → ZAAD">Sahal → ZAAD</option>
+   <option value="Sahal → EVC Plus">Sahal → EVC Plus</option>
+   <option value="Sahal → USDT BEP20">Sahal → USDT BEP20</option>
+   <option value="Sahal → USDT TRC20">Sahal → USDT TRC20</option>
+   <option value="Sahal → USDC BEP20">Sahal → USDC BEP20</option>
+   <option value="ZAAD → Sahal">ZAAD → Sahal</option>
+   <option value="ZAAD → EVC Plus">ZAAD → EVC Plus</option>
+   <option value="ZAAD → USDT BEP20">ZAAD → USDT BEP20</option>
+   <option value="ZAAD → USDT TRC20">ZAAD → USDT TRC20</option>
+   <option value="ZAAD → USDC BEP20">ZAAD → USDC BEP20</option>
+   <option value="EVC Plus → Sahal">EVC Plus → Sahal</option>
+   <option value="EVC Plus → ZAAD">EVC Plus → ZAAD</option>
+   <option value="EVC Plus → USDT BEP20">EVC Plus → USDT BEP20</option>
+   <option value="EVC Plus → USDT TRC20">EVC Plus → USDT TRC20</option>
+   <option value="EVC Plus → USDC BEP20">EVC Plus → USDC BEP20</option>
+   <option value="USDT BEP20 → Sahal">USDT BEP20 → Sahal</option>
+   <option value="USDT BEP20 → ZAAD">USDT BEP20 → ZAAD</option>
+   <option value="USDT BEP20 → EVC Plus">USDT BEP20 → EVC Plus</option>
+   <option value="USDT BEP20 → USDT TRC20">USDT BEP20 → USDT TRC20</option>
+   <option value="USDT BEP20 → USDC BEP20">USDT BEP20 → USDC BEP20</option>
+   <option value="USDT TRC20 → Sahal">USDT TRC20 → Sahal</option>
+   <option value="USDT TRC20 → ZAAD">USDT TRC20 → ZAAD</option>
+   <option value="USDT TRC20 → EVC Plus">USDT TRC20 → EVC Plus</option>
+   <option value="USDT TRC20 → USDT BEP20">USDT TRC20 → USDT BEP20</option>
+   <option value="USDT TRC20 → USDC BEP20">USDT TRC20 → USDC BEP20</option>
+   <option value="USDC BEP20 → Sahal">USDC BEP20 → Sahal</option>
+   <option value="USDC BEP20 → ZAAD">USDC BEP20 → ZAAD</option>
+   <option value="USDC BEP20 → EVC Plus">USDC BEP20 → EVC Plus</option>
+   <option value="USDC BEP20 → USDT BEP20">USDC BEP20 → USDT BEP20</option>
+   <option value="USDC BEP20 → USDT TRC20">USDC BEP20 → USDT TRC20</option>
   </select>
 
   <label for="amount">Amount</label>
   <input id="amount" type="number" min="0.01" max="100000000" step="0.01" required placeholder="Enter amount">
 
-  <label for="paymentMethod">Payment Method</label>
+  <label for="paymentMethod">Payment Method (lacagta aad dirayso)</label>
   <select id="paymentMethod" required>
    <option value="">Select payment method</option>
-   <option value="EVC Plus">EVC Plus</option>
+   <option value="Sahal">Sahal</option>
    <option value="ZAAD">ZAAD</option>
-   <option value="SAHAL">SAHAL</option>
-   <option value="USDT TRC20">USDT TRC20</option>
+   <option value="EVC Plus">EVC Plus</option>
    <option value="USDT BEP20">USDT BEP20</option>
+   <option value="USDT TRC20">USDT TRC20</option>
    <option value="USDC BEP20">USDC BEP20</option>
   </select>
-
-  <section id="paymentDetails" style="display:none;background:#1b304a;border:1px solid #43536a;border-radius:12px;padding:16px;margin-top:18px;overflow-wrap:anywhere"><h3 id="destinationTitle" style="color:#e8c477;margin-top:0">Payment destination</h3><p id="destinationNetwork"></p><p id="destinationAddress" style="font-weight:bold;word-break:break-all"></p><img id="destinationQr" alt="Payment QR Code" width="190" height="190" style="display:block;background:white;padding:8px;border-radius:8px;margin:12px auto"><button type="button" id="copyDestination" style="margin-top:8px">Copy payment details</button><p style="font-size:13px">Hubi network-ka ka hor intaadan dirin lacagta. Ha dirin USDT TRC20 adigoo adeegsanaya BEP20 ama lidkeeda.</p></section>
+  <section id="paymentDetails" style="display:none;background:#1b304a;border:1px solid #43536a;border-radius:12px;padding:16px;margin-top:18px;overflow-wrap:anywhere"><h3 id="destinationTitle" style="color:#e8c477;margin-top:0">Payment destination</h3><p id="destinationNetwork"></p><p id="destinationAddress" style="font-weight:bold;word-break:break-all"></p><img id="destinationQr" alt="Payment QR Code" width="190" height="190" style="display:block;background:white;padding:8px;border-radius:8px;margin:12px auto"><button type="button" id="copyDestination" style="margin-top:8px">Copy payment details</button><p style="font-size:13px">Hubi network-ka ka hor intaadan dirin lacagta.</p></section>
 
   <label for="transactionHash">Transaction Hash (optional)</label>
   <input id="transactionHash" type="text" maxlength="200" placeholder="Enter transaction hash if available">
 
-  <button id="submitButton" type="submit">Submit Exchange Request</button>
+  <button id="submitButton" type="submit">Continue to Receive Details</button>
  </form>
-
+ <form id="receiveForm" style="display:none">
+  <h2>Receive Payment</h2>
+  <p id="receivePairSummary"></p>
+  <label for="receiveMethod">Receive Method</label>
+  <select id="receiveMethod" required></select>
+  <label for="receiveAccount">Your phone number / wallet address</label>
+  <input id="receiveAccount" type="text" maxlength="200" required placeholder="Enter the number or wallet address">
+  <button id="sendButton" type="submit">SEND</button>
+  <button id="backButton" type="button" style="background:#43536a;color:white">Back</button>
+ </form>
  <p id="message" role="status" aria-live="polite"></p>
 </section>
 
@@ -118,72 +153,55 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const form = document.getElementById('orderForm');
-const message = document.getElementById('message');
-const button = document.getElementById('submitButton');
+const form=document.getElementById('orderForm');
+const receiveForm=document.getElementById('receiveForm');
+const message=document.getElementById('message');
+const sendButton=document.getElementById('sendButton');
+const methods=["Sahal","ZAAD","EVC Plus","USDT BEP20","USDT TRC20","USDC BEP20"];
 const destinations={
- 'EVC Plus':{network:'EVC Plus',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE',ussd:'*712*906753968*LACAGTA#'},
- 'ZAAD':{network:'ZAAD',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE',ussd:'*880*906753968*LACAGTA#'},
- 'SAHAL':{network:'SAHAL',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE',ussd:'*883*906753968*LACAGTA#'},
- 'USDT TRC20':{network:'TRON · TRC20',address:'TL5v4W9aVhWbUQeg7dAbocT93tXNu4tQbF'},
- 'USDT BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'},
- 'USDC BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'}
+'EVC Plus':{network:'EVC Plus',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE',ussd:'*712*906753968*LACAGTA#'},
+'ZAAD':{network:'ZAAD',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE',ussd:'*880*906753968*LACAGTA#'},
+'Sahal':{network:'SAHAL',address:'906753968',accountName:'CABDINAASIR BAASHI MUUSE',ussd:'*883*906753968*LACAGTA#'},
+'USDT TRC20':{network:'TRON · TRC20',address:'TL5v4W9aVhWbUQeg7dAbocT93tXNu4tQbF'},
+'USDT BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'},
+'USDC BEP20':{network:'BNB Smart Chain · BEP20',address:'0x6Ef6073BE396a9177399e887811C02E45804376d'}
 };
+let pendingOrder=null;
 const paymentSelect=document.getElementById('paymentMethod');
-function showPaymentDestination(){const method=paymentSelect.value,d=destinations[method],panel=document.getElementById('paymentDetails');if(!d){panel.style.display='none';return}panel.style.display='block';document.getElementById('destinationTitle').textContent='Send payment to '+method;document.getElementById('destinationNetwork').textContent=(d.accountName?'MAGACA: '+d.accountName:'Network: '+d.network)+(d.ussd?'\nLambarka: '+d.ussd:'');document.getElementById('destinationNetwork').style.whiteSpace='pre-line';document.getElementById('destinationAddress').textContent=d.address;document.getElementById('destinationAddress').style.display=(method==='EVC Plus'||method==='ZAAD'||method==='SAHAL')?'none':'block';const qr=document.getElementById('destinationQr');if(method.includes('USDT')||method.includes('USDC')){qr.style.display='block';qr.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(d.address)}else{qr.style.display='none';qr.removeAttribute('src')}}
+function showPaymentDestination(){
+ const method=paymentSelect.value,d=destinations[method],panel=document.getElementById('paymentDetails');
+ if(!d){panel.style.display='none';return}
+ panel.style.display='block';document.getElementById('destinationTitle').textContent='Send payment to '+method;
+ document.getElementById('destinationNetwork').textContent=(d.accountName?'MAGACA: '+d.accountName:'Network: '+d.network)+(d.ussd?'\nLambarka: '+d.ussd:'');
+ document.getElementById('destinationNetwork').style.whiteSpace='pre-line';document.getElementById('destinationAddress').textContent=d.address;
+ document.getElementById('destinationAddress').style.display=['EVC Plus','ZAAD','Sahal'].includes(method)?'none':'block';
+ const qr=document.getElementById('destinationQr');if(method.includes('USDT')||method.includes('USDC')){qr.style.display='block';qr.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(d.address)}else{qr.style.display='none';qr.removeAttribute('src')}
+}
 paymentSelect.addEventListener('change',showPaymentDestination);
-document.getElementById('copyDestination').addEventListener('click',async()=>{const value=document.getElementById('destinationAddress').textContent;try{await navigator.clipboard.writeText(value);document.getElementById('copyDestination').textContent='Copied!'}catch{document.getElementById('copyDestination').textContent='Copy failed'}});
-
-form.addEventListener('submit', async (event) => {
- event.preventDefault();
-
- if (!form.reportValidity()) return;
-
- const customerName = document.getElementById('customerName').value.trim();
- const customerContact = document.getElementById('contact').value.trim();
- const exchangePair = document.getElementById('pair').value;
- const amount = Number(document.getElementById('amount').value);
- const paymentMethod = document.getElementById('paymentMethod').value;
- const transactionHash = document.getElementById('transactionHash').value.trim();
-
- if (customerName.length < 2 || customerContact.length < 5 ||
-     !Number.isFinite(amount) || amount <= 0 || amount > 100000000) {
-  message.textContent = 'Please check your details and enter a valid amount.';
-  return;
- }
-
- button.disabled = true;
- button.textContent = 'Submitting...';
- message.textContent = '';
-
- try {
-  const { error } = await supabase
-   .from('orders')
-   .insert({
-    customer_name: customerName,
-    customer_contact: customerContact,
-    exchange_pair: exchangePair,
-    amount: amount,
-    payment_method: paymentMethod,
-    transaction_hash: transactionHash || null
-   });
-
-  if (error) throw error;
-
-  message.textContent =
-   'Your request was submitted successfully! Your order is pending admin review.';
-
-  form.reset();
-
- } catch (error) {
-  console.error('Order submission error:', error);
-  const detail = error?.message || error?.details || error?.hint || 'Unknown error';
-  message.textContent = 'Submission failed: ' + detail;
-  message.style.color = '#ffb4a8';
- } finally {
-  button.disabled = false;
-  button.textContent = 'Submit Exchange Request';
- }
+document.getElementById('pair').addEventListener('change',()=>{const from=document.getElementById('pair').value.split(' → ')[0];if(methods.includes(from)){paymentSelect.value=from;showPaymentDestination()}});
+document.getElementById('copyDestination').addEventListener('click',async()=>{const v=destinations[paymentSelect.value]?.address||'';try{await navigator.clipboard.writeText(v);document.getElementById('copyDestination').textContent='Copied!'}catch{document.getElementById('copyDestination').textContent='Copy failed'}});
+form.addEventListener('submit',event=>{
+ event.preventDefault();if(!form.reportValidity())return;
+ const [from,to]=document.getElementById('pair').value.split(' → '),paymentMethod=paymentSelect.value;
+ if(!from||!to||paymentMethod!==from){message.textContent='Payment Method waa inuu la mid noqdaa lacagta aad dirayso.';return}
+ const amount=Number(document.getElementById('amount').value),customerName=document.getElementById('customerName').value.trim(),customerContact=document.getElementById('contact').value.trim();
+ if(customerName.length<2||customerContact.length<5||!Number.isFinite(amount)||amount<=0){message.textContent='Fadlan hubi xogtaada iyo lacagta.';return}
+ pendingOrder={customer_name:customerName,customer_contact:customerContact,exchange_pair:document.getElementById('pair').value,amount,payment_method:paymentMethod,transaction_hash:document.getElementById('transactionHash').value.trim()||null};
+ document.getElementById('receiveMethod').replaceChildren(new Option(to,to));document.getElementById('receivePairSummary').textContent='Waxaad diraysaa '+from+' waxaadna qaadanaysaa '+to+'.';
+ form.style.display='none';receiveForm.style.display='block';message.textContent='';window.scrollTo({top:document.querySelector('.card').offsetTop,behavior:'smooth'});
+});
+document.getElementById('backButton').addEventListener('click',()=>{receiveForm.style.display='none';form.style.display='block';message.textContent=''});
+receiveForm.addEventListener('submit',async event=>{
+ event.preventDefault();if(!pendingOrder||!receiveForm.reportValidity())return;
+ const receiveMethod=document.getElementById('receiveMethod').value,receiveAccount=document.getElementById('receiveAccount').value.trim();
+ if(receiveAccount.length<5){message.textContent='Geli telefoon ama wallet address sax ah.';return}
+ sendButton.disabled=true;sendButton.textContent='Sending...';message.textContent='';
+ try{
+  const {error}=await supabase.from('orders').insert({...pendingOrder,receive_method:receiveMethod,receive_account:receiveAccount});
+  if(error)throw error;
+  receiveForm.style.display='none';form.reset();receiveForm.reset();pendingOrder=null;message.style.color='#20c997';message.textContent='Your request was sent successfully! Status: PENDING. Admin will verify your payment.';
+ }catch(error){console.error('Order submission error:',error);message.style.color='#ffb4a8';message.textContent='Submission failed: '+(error?.message||'Unknown error')}
+ finally{sendButton.disabled=false;sendButton.textContent='SEND'}
 });
 </script>
 </body>
