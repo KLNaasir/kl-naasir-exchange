@@ -14,6 +14,20 @@
 <div class="stats"><div class="stat">Dhammaan<strong id="totalCount">0</strong></div><div class="stat">Pending<strong id="pendingCount">0</strong></div><div class="stat">Approved<strong id="approvedCount">0</strong></div><div class="stat">Processing<strong id="processingCount">0</strong></div><div class="stat">Completed<strong id="completedCount">0</strong></div><div class="stat">Rejected<strong id="rejectedCount">0</strong></div></div>
 <div class="panel"><h2>Payment Wallets & QR Codes</h2><p class="hint">Meelaha lacagta macaamiishu kuugu soo dirayaan. QR-yadu waxay xambaarsan yihiin cinwaanka wallet-ka oo keliya.</p><div id="walletCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px"></div></div>
 <div class="panel"><h2>Orders Management</h2><div class="filters"><input id="search" placeholder="Raadi magaca, contact, hash ama ID"><select id="statusFilter"><option value="all">Dhammaan status-yada</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="rejected">Rejected</option></select></div><p class="hint">Hubi in lacagtu dhab ahaan soo gashay ka hor intaadan ansixin. Hash ama sawir keliya ma caddaynayaan lacag-bixin.</p><div class="table-wrap"><table><thead><tr><th>ID / Date</th><th>Customer</th><th>Contact</th><th>Exchange</th><th>Amount</th><th>Payment / Hash</th><th>Receive Details</th><th>Status</th><th>Admin note</th><th>Actions</th></tr></thead><tbody id="ordersBody"><tr><td colspan="10">Loading...</td></tr></tbody></table></div></div>
+
+<div class="panel"><h2>💬 Telegram Support Inbox</h2>
+<p class="hint">Fariimaha macaamiisha Telegram-ka. Dooro qof si aad u aragto wada sheekaysiga una jawaabto.</p>
+<div class="filters"><select id="supportFilter"><option value="open">Chats furan</option><option value="all">Dhammaan chats</option><option value="closed">Kuwa xiran</option></select><button class="secondary" id="supportRefresh">Refresh Support</button></div>
+<div style="display:grid;grid-template-columns:minmax(180px,1fr) minmax(260px,2fr);gap:12px">
+<div id="supportList" style="max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px">Loading...</div>
+<div style="border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0">
+<div id="supportTitle" class="muted">Dooro wada sheekaysi</div>
+<div id="supportMessages" style="height:320px;overflow:auto;padding:8px 0"></div>
+<textarea id="supportReply" rows="3" placeholder="Ku qor jawaabtaada..." disabled></textarea>
+<button id="supportSend" disabled>Dir jawaabta Telegram</button>
+<button id="supportClose" class="danger" disabled>Xir chat-ka</button>
+<p id="supportNotice" class="hint"></p>
+</div></div></div>
 </section></main>
 <script type="module">
 import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -23,7 +37,7 @@ const paymentDestinations=[{name:"EVC Plus",detail:"906753868",network:"Mobile M
 function renderWallets(){const root=$("walletCards");root.replaceChildren();for(const w of paymentDestinations){const card=document.createElement("div");card.style.cssText="background:#0b1729;border:1px solid #2b405b;border-radius:12px;padding:14px;overflow-wrap:anywhere";const title=document.createElement("strong");title.textContent=w.name;const network=document.createElement("p");network.className="muted";network.textContent=w.network;const address=document.createElement("p");address.textContent=w.detail;const qr=document.createElement("img");qr.alt="QR Code "+w.name;qr.width=160;qr.height=160;qr.style.cssText="display:block;background:white;padding:8px;border-radius:8px;margin:10px auto";qr.src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data="+encodeURIComponent(w.detail);const copy=document.createElement("button");copy.className="secondary";copy.textContent="Copy";copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(w.detail);copy.textContent="Copied"}catch{copy.textContent="Copy failed"}});card.append(title,network,address,qr,copy);root.appendChild(card)}}
 function showLogin(msg=""){currentUser=null;$("dashboard").style.display="none";$("login").style.display="block";$("message").textContent=msg}
 async function verifyAdmin(user){const {data,error}=await supabase.from("admin_users").select("role").eq("user_id",user.id).eq("role","super_admin").maybeSingle();if(error)throw error;return !!data}
-async function enterDashboard(user){if(!await verifyAdmin(user)){await supabase.auth.signOut();showLogin("Akoonkan looma oggola Super Admin.");return}currentUser=user;$("adminEmail").textContent="Super Admin: "+(user.email||"");renderWallets();$("login").style.display="none";$("dashboard").style.display="block";await loadOrders()}
+async function enterDashboard(user){if(!await verifyAdmin(user)){await supabase.auth.signOut();showLogin("Akoonkan looma oggola Super Admin.");return}currentUser=user;$("adminEmail").textContent="Super Admin: "+(user.email||"");renderWallets();$("login").style.display="none";$("dashboard").style.display="block";await loadOrders();await loadSupport()}
 function makeCell(row,value,cls=""){const td=document.createElement("td");td.textContent=value==null||value===""?"-":String(value);if(cls)td.className=cls;row.appendChild(td);return td}
 function updateStats(){ $("totalCount").textContent=allOrders.length;$("pendingCount").textContent=allOrders.filter(x=>x.status==="pending").length;$("approvedCount").textContent=allOrders.filter(x=>x.status==="approved").length;$("rejectedCount").textContent=allOrders.filter(x=>x.status==="rejected").length;$("processingCount").textContent=allOrders.filter(x=>x.status==="processing").length;$("completedCount").textContent=allOrders.filter(x=>x.status==="completed").length}
 function renderOrders(){const body=$("ordersBody");body.replaceChildren();const term=$("search").value.trim().toLowerCase(),filter=$("statusFilter").value;const rows=allOrders.filter(o=>(filter==="all"||o.status===filter)&&[o.id,o.customer_name,o.customer_contact,o.transaction_hash,o.exchange_pair,o.receive_account].some(v=>String(v??"").toLowerCase().includes(term)));if(!rows.length){const tr=document.createElement("tr");makeCell(tr,"Wax dalab ah lama helin.");body.appendChild(tr);return}
@@ -35,7 +49,50 @@ async function loadOrders(){if(!currentUser)return;$("dashboardMessage").textCon
 async function saveNote(id,note,button){button.disabled=true;const {error}=await supabase.from("orders").update({admin_note:note.trim()||null,updated_at:new Date().toISOString()}).eq("id",id);button.disabled=false;if(error){$("dashboardMessage").textContent="Qoraalka lama kaydin: "+error.message;return}$("dashboardMessage").textContent="Admin note waa la kaydiyey.";await loadOrders()}
 async function changeStatus(id,status,expectedStatus,note,button){const prompts={approved:"Ma xaqiijisay in lacagtu dhab ahaan soo gashay? Ansixi?",processing:"Ma bilaabaysaa diyaarinta lacagta macaamilka loo dirayo?",completed:"Ma xaqiijisay in lacagta loo diray macaamilka?",rejected:"Ma hubtaa inaad diidayso dalabkan?"};if(!confirm(prompts[status]||"Beddel status-ka?"))return;button.disabled=true;const update={status,updated_at:new Date().toISOString()};if(status==="rejected")update.admin_note=note.trim();const {data,error}=await supabase.from("orders").update(update).eq("id",id).eq("status",expectedStatus).select("id");button.disabled=false;if(error){$("dashboardMessage").textContent="Update ma guuleysan: "+error.message;return}if(!data?.length){$("dashboardMessage").textContent="Dalabku hore ayuu isu beddelay; dib u refresh garee.";await loadOrders();return}let notice="Status waa la cusboonaysiiyey.";if(status==="processing"||status==="completed"){const {data:notifyData,error:notifyError}=await supabase.functions.invoke("telegram-bot",{body:{action:"notify_order_status",order_id:id,status}});if(notifyError||notifyData?.sent===false){notice+=" Laakiin fariinta Telegram lama dirin: "+(notifyError?.message||notifyData?.message||"Hubi bot-ka.");}else if(notifyData?.sent){notice+=status==="processing"?" Fariinta Processing waa la diray.":" Fariinta Completed waa la diray.";}else{notice+=" Ogeysiiska Telegram jawaabtiisa lama xaqiijin."}}$("dashboardMessage").textContent=notice;await loadOrders()}
 $("loginBtn").addEventListener("click",async()=>{const email=$("email").value.trim(),password=$("password").value;if(!email||!password){$("message").textContent="Geli email iyo password.";return}$("message").textContent="Fadlan sug...";const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error){$("message").textContent="Login error: "+error.message;return}try{await enterDashboard(data.user)}catch(e){await supabase.auth.signOut();showLogin("Admin verification error: "+e.message)}});
-$("refreshBtn").addEventListener("click",loadOrders);$("logoutBtn").addEventListener("click",async()=>{await supabase.auth.signOut();showLogin("Waad ka baxday akoonka.")});$("search").addEventListener("input",renderOrders);$("statusFilter").addEventListener("change",renderOrders);
+
+let activeSupportId=null;
+async function loadSupport(){
+ if(!currentUser)return;
+ const filter=$("supportFilter").value;
+ let q=supabase.from("support_conversations").select("*").order("last_message_at",{ascending:false});
+ if(filter!=="all")q=q.eq("status",filter);
+ const {data,error}=await q;
+ if(error){$("supportList").textContent="Cilad: "+error.message;return}
+ const root=$("supportList");root.replaceChildren();
+ if(!data?.length){root.textContent="Weli ma jiraan chats.";return}
+ for(const conv of data){
+  const b=document.createElement("button");b.style.cssText="display:block;width:100%;text-align:left;background:#0b1729;color:white;margin:4px 0;padding:12px";
+  b.textContent=(conv.customer_name||("Telegram "+conv.telegram_user_id))+" · "+(conv.unread_admin?"NEW · ":"")+conv.status+"\n"+(conv.last_message||"");
+  b.addEventListener("click",()=>openSupport(conv));root.appendChild(b);
+ }
+}
+async function openSupport(conv){
+ activeSupportId=conv.id;
+ $("supportTitle").textContent=(conv.customer_name||"Telegram customer")+" · "+conv.telegram_user_id+" · "+conv.status;
+ $("supportReply").disabled=conv.status==="closed";$("supportSend").disabled=conv.status==="closed";$("supportClose").disabled=conv.status==="closed";
+ const {data,error}=await supabase.from("support_messages").select("*").eq("conversation_id",conv.id).order("created_at");
+ const root=$("supportMessages");root.replaceChildren();
+ if(error){root.textContent="Cilad: "+error.message;return}
+ for(const m of data||[]){const p=document.createElement("div");p.style.cssText="padding:9px;margin:6px 0;border-radius:9px;background:"+(m.sender==="admin"?"#173d54":"#202d40")+";overflow-wrap:anywhere";const who=document.createElement("strong");who.textContent=m.sender==="admin"?"Adiga":"Macmiil";const body=document.createElement("div");body.textContent=m.message_text||("[ "+(m.telegram_file_type||"file")+" ]");const time=document.createElement("small");time.className="muted";time.textContent=new Date(m.created_at).toLocaleString();p.append(who,body,time);root.appendChild(p)}
+ root.scrollTop=root.scrollHeight;
+ await supabase.from("support_conversations").update({unread_admin:false}).eq("id",conv.id);
+}
+async function sendSupportReply(){
+ const message=$("supportReply").value.trim();if(!activeSupportId||!message)return;
+ $("supportSend").disabled=true;$("supportNotice").textContent="Fariinta waa la dirayaa...";
+ const {data,error}=await supabase.functions.invoke("telegram-bot",{body:{action:"support_reply",conversation_id:activeSupportId,message}});
+ $("supportSend").disabled=false;
+ if(error||data?.sent===false){$("supportNotice").textContent="Diristu ma guuleysan: "+(error?.message||data?.message||"Hubi Edge Function.");return}
+ $("supportReply").value="";$("supportNotice").textContent="Jawaabta waa la diray.";await loadSupport();
+ const {data:conv}=await supabase.from("support_conversations").select("*").eq("id",activeSupportId).maybeSingle();if(conv)await openSupport(conv);
+}
+async function closeSupport(){
+ if(!activeSupportId||!confirm("Ma xiraysaa wada sheekaysigan?"))return;
+ const {error}=await supabase.from("support_conversations").update({status:"closed",updated_at:new Date().toISOString()}).eq("id",activeSupportId);
+ $("supportNotice").textContent=error?"Xiriddu ma guuleysan: "+error.message:"Chat-ka waa la xiray.";
+ $("supportReply").disabled=true;$("supportSend").disabled=true;$("supportClose").disabled=true;await loadSupport();
+}
+\n$("refreshBtn").addEventListener("click",loadOrders);$("supportRefresh").addEventListener("click",loadSupport);$("supportFilter").addEventListener("change",loadSupport);$("supportSend").addEventListener("click",sendSupportReply);$("supportClose").addEventListener("click",closeSupport);$("logoutBtn").addEventListener("click",async()=>{await supabase.auth.signOut();showLogin("Waad ka baxday akoonka.")});$("search").addEventListener("input",renderOrders);$("statusFilter").addEventListener("change",renderOrders);
 supabase.auth.onAuthStateChange(event=>{if(event==="SIGNED_OUT")showLogin("Waad ka baxday akoonka.")});
 const {data:{session}}=await supabase.auth.getSession();if(session){try{await enterDashboard(session.user)}catch(e){await supabase.auth.signOut();showLogin("Admin verification error: "+e.message)}}else showLogin();
 </script></body></html>
